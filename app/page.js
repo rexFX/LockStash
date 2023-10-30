@@ -1,12 +1,19 @@
 'use client';
 import * as srp from 'secure-remote-password/client';
+import CryptoJS from 'crypto-js';
 
 const Home = () => {
   const signup = async (email, password) => {
     email = 'abcd';
     password = '1234';
     const salt = srp.generateSalt();
-    const privateKey = srp.derivePrivateKey(salt, email, password);
+    // const privateKey = srp.derivePrivateKey(salt, email, password);
+
+    const privateKey = CryptoJS.PBKDF2(salt + password + email + salt, salt, {
+      keySize: 512 / 32,
+      iterations: 10000,
+    }).toString();
+
     const verifier = srp.deriveVerifier(privateKey);
     fetch('http://localhost:5173/api/signup', {
       method: 'POST',
@@ -36,7 +43,12 @@ const Home = () => {
         const { salt, serverEphemeral } = resp;
         const clientEphemeral = srp.generateEphemeral();
 
-        const privateKey = srp.derivePrivateKey(salt, email, '1234');
+        // const privateKey = srp.derivePrivateKey(salt, email, '1234');
+        const privateKey = CryptoJS.PBKDF2(salt + password + email + salt, salt, {
+          keySize: 512 / 32,
+          iterations: 10000,
+        }).toString();
+
         const clientSession = srp.deriveSession(clientEphemeral.secret, serverEphemeral, salt, email, privateKey);
 
         fetch('http://localhost:5173/api/loginWithProof', {

@@ -12,4 +12,5 @@ encrypt karke dalna hai
 Secure remote password protocol implemented, now since password is not going to server, 
 we will generate a secure aes key and encrypt it with our salt and password, and save this encrypted key to the server
 whenever password is correct, the server will send the encrypted key back to the user and this key will get decrypted locally
+using salt and password
 then we can use this key to decrypt or encrypt whatever we want.
