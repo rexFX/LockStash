@@ -11,9 +11,11 @@
   "dependencies": {
     "crypto-js": "^4.2.0",
     "next": "13.5.6",
+    "next-auth": "^4.24.4",
     "react": "^18",
     "react-dom": "^18",
-    "secure-remote-password": "^0.3.1"
+    "secure-remote-password": "^0.3.1",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^10",

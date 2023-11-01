@@ -1,0 +1,95 @@
+import NextAuth from 'next-auth';
+import CredentialsProvider from 'next-auth/providers/credentials';
+import srp from 'secure-remote-password/client';
+import CryptoJS from 'crypto-js';
+
+const handler = NextAuth({
+  providers: [
+    CredentialsProvider({
+      name: 'Credentials',
+      credentials: {
+        email: { label: 'Email', type: 'text', placeholder: 'user@example.com' },
+        password: { label: 'Password', type: 'password' },
+      },
+
+      async authorize(credentials, req) {
+        try {
+          let user = null;
+
+          let resp = await fetch('http://localhost:5173/api/login', {
+            method: 'POST',
+            body: JSON.stringify({ email: credentials.email }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+          resp = await resp.json();
+
+          const { salt, serverEphemeral } = resp;
+          const clientEphemeral = srp.generateEphemeral();
+
+          const privateKey = CryptoJS.PBKDF2(salt + credentials.password + credentials.email + salt, salt, {
+            keySize: 512 / 32,
+            iterations: 10000,
+          }).toString();
+
+          const clientSession = srp.deriveSession(
+            clientEphemeral.secret,
+            serverEphemeral,
+            salt,
+            credentials.email,
+            privateKey,
+          );
+
+          console.log(credentials.email);
+          let res = await fetch('http://localhost:5173/api/loginWithProof', {
+            method: 'POST',
+            body: JSON.stringify({
+              email: credentials.email,
+              clientEphemeral: clientEphemeral.public,
+              clientProof: clientSession.proof,
+            }),
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+
+          res = await res.json();
+          const { serverProof, key, files } = res;
+
+          srp.verifySession(clientEphemeral.public, clientSession, serverProof);
+          user = { email: credentials.email, key, files };
+
+          console.log(user);
+          return user;
+        } catch (err) {
+          console.log(err.message);
+          return null;
+        }
+      },
+    }),
+  ],
+  secret: process.env.NEXTAUTH_SECRET,
+  session: {
+    strategy: 'jwt',
+  },
+  callbacks: {
+    jwt: async ({ token, trigger, session, user }) => {
+      if (trigger === 'signIn') {
+        user && (token.user = user);
+      }
+
+      if (trigger === 'update') {
+        token.user = session.user;
+      }
+
+      return Promise.resolve(token);
+    },
+    session: async ({ session, token }) => {
+      session.user = token.user;
+      return Promise.resolve(session);
+    },
+  },
+});
+
+export { handler as GET, handler as POST };
