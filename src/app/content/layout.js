@@ -68,14 +68,9 @@ const ContentLayout = ({ children }) => {
         <input type="file" onChange={filePicker} />
         <div className="w-[80%] p-4 gap-3 flex flex-col justify-center items-center">
           <button
-            className="w-[50%] text-center p-3 rounded-md bg-[#616161] cursor-pointer hover:bg-[#757575] transition-colors"
+            className="w-[50%] text-center p-3 rounded-md cursor-pointer bg-gray-300 hover:bg-gray-400 transition-colors"
             onClick={fileUploader}>
             Upload
-          </button>
-          <button
-            className="w-[50%] text-center p-3 rounded-md bg-[#616161] cursor-pointer hover:bg-[#757575] transition-colors"
-            onClick={() => fileDownloader({ fileName: 'file1' })}>
-            Download
           </button>
         </div>
       </div>
