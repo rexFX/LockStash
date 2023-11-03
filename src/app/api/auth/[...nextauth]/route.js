@@ -77,6 +77,7 @@ const handler = NextAuth({
     jwt: async ({ token, trigger, session, user }) => {
       if (trigger === 'signIn') {
         user && (token.user = user);
+        token.user.decrypt = false;
       }
 
       if (trigger === 'update') {

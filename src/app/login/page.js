@@ -1,25 +1,34 @@
 'use client';
 import * as srp from 'secure-remote-password/client';
 import CryptoJS from 'crypto-js';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { signIn, signOut, useSession } from 'next-auth/react';
+import { initialize } from '@/src/redux/features/files-slice';
+import { useDispatch } from 'react-redux';
+import Link from 'next/link';
 
 const Home = () => {
   const { data: session, update } = useSession();
   const [E_Pass, setE_Pass] = useState('');
   const [D_Pass, setD_Pass] = useState('');
+  const dispatch = useDispatch();
 
   const decryptEncryptedKey = () => {
     if (D_Pass.length > 0) {
       let key = session.user.key;
-      const dkey = CryptoJS.AES.decrypt(key, D_Pass).toString(CryptoJS.enc.Utf8);
-      update({
-        ...session,
-        user: {
-          ...session.user,
-          key: dkey,
-        },
-      });
+      try {
+        const dkey = CryptoJS.AES.decrypt(key, D_Pass).toString(CryptoJS.enc.Utf8);
+        update({
+          ...session,
+          user: {
+            ...session.user,
+            key: dkey,
+          },
+        });
+        dispatch(initialize(session.user.files));
+      } catch (err) {
+        console.log('wrong decryption key');
+      }
     }
   };
 
@@ -110,6 +119,8 @@ const Home = () => {
           <button onClick={decryptEncryptedKey}>decrypt</button>
           <br />
           <button onClick={() => signOut()}>logout</button>
+          <br />
+          <Link href={'/content'}>Go to content</Link>
         </>
       )}
     </div>
