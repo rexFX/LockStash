@@ -55,13 +55,6 @@ const ContentLayout = ({ children }) => {
     }
   };
 
-  const fileDownloader = (selectedFile) => {
-    fetch('http://localhost:5173/api/download', {
-      method: 'GET',
-      body: JSON.stringify({ email: session.user.email, fileName: selectedFile.fileName }),
-    });
-  };
-
   return (
     <div className="flex-1 flex flex-row">
       <div className="flex-[1] p-4 border-r-[0.5px] font-inter flex flex-col justify-center items-center">

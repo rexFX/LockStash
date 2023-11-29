@@ -55,10 +55,10 @@ const handler = NextAuth({
           });
 
           res = await res.json();
-          const { serverProof, key, files } = res;
+          const { serverProof, key, files, mediaPassword } = res;
 
           srp.verifySession(clientEphemeral.public, clientSession, serverProof);
-          user = { email: credentials.email, key, files };
+          user = { email: credentials.email, key, files, mediaPassword };
 
           console.log(user);
           return user;
