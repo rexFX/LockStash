@@ -5,7 +5,9 @@ import ReduxProvider from '../redux/provider';
 const Index = ({ children }) => {
   return (
     <SessionProvider>
-      <ReduxProvider>{children}</ReduxProvider>
+      <ReduxProvider>
+        <div className="h-screen w-screen flex">{children}</div>
+      </ReduxProvider>
     </SessionProvider>
   );
 };

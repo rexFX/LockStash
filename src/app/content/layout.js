@@ -5,6 +5,8 @@ import { v4 as uuidv4 } from 'uuid';
 import { useSession } from 'next-auth/react';
 import { add } from '@/src/redux/features/files-slice';
 import { useDispatch } from 'react-redux';
+import { signOut } from 'next-auth/react';
+import Link from 'next/link';
 
 const ContentLayout = ({ children }) => {
   const dispatch = useDispatch();
@@ -56,14 +58,19 @@ const ContentLayout = ({ children }) => {
   };
 
   return (
-    <div className="flex-1 flex flex-row">
+    <div className="flex-1 flex flex-row bg-[#161b22]">
       <div className="flex-[1] p-4 border-r-[0.5px] font-inter flex flex-col justify-center items-center">
-        <input type="file" onChange={filePicker} />
+        <input type="file" className="text-white" onChange={filePicker} />
         <div className="w-[80%] p-4 gap-3 flex flex-col justify-center items-center">
           <button
             className="w-[50%] text-center p-3 rounded-md cursor-pointer bg-gray-300 hover:bg-gray-400 transition-colors"
             onClick={fileUploader}>
             Upload
+          </button>
+          <button
+            className="w-[50%] text-center p-3 rounded-md cursor-pointer bg-gray-300 hover:bg-gray-400 transition-colors"
+            onClick={() => signOut({ callbackUrl: 'http://localhost:3000/' })}>
+            Log Out
           </button>
         </div>
       </div>

@@ -170,30 +170,50 @@ const Home = () => {
           <button onClick={AddEncryptedKey} className="m-3 text-white hover:bg-black p-3 transition-all">
             Save media password
           </button>
+          <button className="text-white hover:bg-black p-3 transition-all" onClick={() => signOut()}>
+            Log Out
+          </button>
         </div>
       )}
       {session?.user.mediaPassword === true && (
-        <>
-          <h1>You are logged in as: {session.user.email}</h1>
+        <div>
+          <h1 className="text-white">You are logged in as: {session.user.email}</h1>
           <br />
-          <h1>Key: {session.user.key}</h1>
-          <br />
-          <label htmlFor="d_key_input">Enter your media password: </label>
-          <input
-            className="border-2"
-            name="d_key_input"
-            type="text"
-            onChange={(e) => setD_Pass(e.target.value)}
-            value={D_Pass}
-          />
-          <br />
-          <button className="m-3" onClick={decryptEncryptedKey}>
-            decrypt
-          </button>
-          <button onClick={() => signOut()}>logout</button>
-          <br />
-          <Link href={'/content'}>Go to content</Link>
-        </>
+          {session?.user.decrypt === false ? (
+            <div className="flex flex-col justify-start">
+              <label htmlFor="d_key_input" className="text-white">
+                Enter your media password:{' '}
+              </label>
+              <input
+                className="border-2 px-6 py-1 rounded-md"
+                name="d_key_input"
+                type="password"
+                onChange={(e) => setD_Pass(e.target.value)}
+                value={D_Pass}
+              />
+              <div className="flex justify-evenly items-center">
+                <button className="hover:bg-black p-3 transition-all text-white" onClick={decryptEncryptedKey}>
+                  decrypt
+                </button>
+                <button className="text-white hover:bg-black p-3 transition-all" onClick={() => signOut()}>
+                  Log Out
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="flex flex-col justify-center items-center">
+              <p className="text-white">Decrypted!</p>
+              <div className="flex flex-row justify-evenly items-center mt-3">
+                <Link className="text-white hover:bg-black p-3 transition-all" href={'/content'}>
+                  Go to content
+                </Link>
+                <button className="text-white hover:bg-black p-3 transition-all" onClick={() => signOut()}>
+                  Log Out
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
       )}
     </div>
   );

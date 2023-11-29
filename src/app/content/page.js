@@ -56,7 +56,7 @@ const Content = () => {
         const dec_file = CryptoJS.AES.decrypt(file.enc_original_name, session.user.key).toString(CryptoJS.enc.Utf8);
         return (
           <div
-            className="w-full p-3 hover:bg-gray-200"
+            className="w-full p-3 hover:bg-gray-200 text-white hover:text-black cursor-pointer transition-colors"
             key={file.fileName}
             filename={file.fileName}
             origname={dec_file}
