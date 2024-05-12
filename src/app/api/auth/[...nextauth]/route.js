@@ -13,6 +13,11 @@ const handler = NextAuth({
       },
 
       async authorize(credentials, req) {
+        // if (credentials.password.length < 8) {
+        //   console.log('Password must be at least 8 characters long');
+        //   return null;
+        // }
+
         try {
           let user = null;
 

@@ -20,7 +20,6 @@ const ContentLayout = ({ children }) => {
   const fileUploader = () => {
     if (file !== null) {
       var reader = new FileReader();
-      // const enc_key = sessionStorage.getItem('enc_key');
       const enc_key = session.user.key;
       reader.onload = function () {
         const wordArray = CryptoJS.lib.WordArray.create(reader.result);
