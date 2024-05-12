@@ -34,8 +34,8 @@ const handler = NextAuth({
           const clientEphemeral = srp.generateEphemeral();
 
           const privateKey = CryptoJS.PBKDF2(salt + credentials.password + credentials.email + salt, salt, {
-            keySize: 512 / 32,
-            iterations: 10000,
+            keySize: 256 / 32,
+            iterations: 50,
           }).toString();
 
           const clientSession = srp.deriveSession(

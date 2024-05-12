@@ -41,8 +41,8 @@ const Home = () => {
       const email = session.user.email;
       console.log(session.user);
       const dec_key = CryptoJS.PBKDF2(srp.generateSalt(), srp.generateSalt(), {
-        keySize: 1024 / 32,
-        iterations: 1000,
+        keySize: 256 / 32,
+        iterations: 100,
       }).toString();
       console.log(dec_key);
       const encryptedKey = CryptoJS.AES.encrypt(dec_key, E_Pass).toString();
@@ -82,8 +82,8 @@ const Home = () => {
     const salt = srp.generateSalt();
 
     const privateKey = CryptoJS.PBKDF2(salt + password + email + salt, salt, {
-      keySize: 512 / 32,
-      iterations: 10000,
+      keySize: 256 / 32,
+      iterations: 50,
     }).toString();
 
     const verifier = srp.deriveVerifier(privateKey);
